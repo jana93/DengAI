@@ -91,3 +91,5 @@ weka-3-9-1/
 dataset/dengue_features_train.csv
 dataset/dengue_labels_train.csv
 dataset/submission_format.csv
+.idea/
+.idea/vcs.xml
