@@ -1,10 +1,27 @@
-def check(filename):
+def fetchHeading(filename):
+    file=open(filename)
+    line=file.readline()
+    heading=[]
+    headings=line.split(",")
+    for i in range(len(headings)):
+        heading.append((headings[i]))
+    file.close()
+    return heading
+
+def fetchHeadingWithIndex(filename):
     file=open(filename)
     line=file.readline()
     heading=[]
     headings=line.split(",")
     for i in range(len(headings)):
         heading.append((i,headings[i]))
+    file.close()
+    return heading
+
+def getMissing(filename):
+    heading=fetchHeadingWithIndex(filename)
+    file=open(filename)
+    line=file.readline()
     line=file.readline()
     linecount=0
     missing=[]
@@ -17,6 +34,7 @@ def check(filename):
                 missingcount=missingcount+1
         line=file.readline()
         linecount=linecount+1
+    file.close()
     return  missing,missingcount
 
 def isMissing(filename,x,y):
@@ -33,15 +51,13 @@ def isMissing(filename,x,y):
                     isMissing = True
         line=file.readline()
         linecount=linecount+1
+    file.close()
     return isMissing
 
 def isMissingByHeading(filename,x,headIn):
+    heading=fetchHeading(filename)
     file=open(filename)
     line=file.readline()
-    heading=[]
-    headings=line.split(",")
-    for i in range(len(headings)):
-        heading.append(headings[i])
     line=file.readline()
     linecount=0
     isMissing =False
@@ -53,15 +69,13 @@ def isMissingByHeading(filename,x,headIn):
                     isMissing=True
         line=file.readline()
         linecount=linecount+1
+    file.close()
     return  isMissing
 
-def isMissingListbyLine(filename,lineNumber):
+def getMissingListbyLine(filename,lineNumber):
+    heading=fetchHeading(filename)
     file = open(filename)
     line = file.readline()
-    heading = []
-    headings = line.split(",")
-    for i in range(len(headings)):
-        heading.append((i, headings[i]))
     line = file.readline()
     linecount = 0
     missing = []
@@ -79,31 +93,15 @@ def isMissingListbyLine(filename,lineNumber):
             linecount = linecount + 1
         else :
             break
+    file.close()
     return missing,attributeCount
 
 
-def isMissingListbyHeadingNumber(filename,headingnumber):
-    file = open(filename)
-    line = file.readline()
-    heading = []
-    headings = line.split(",")
-    for i in range(len(headings)):
-        heading.append((i,headings[i]))
-    line = file.readline()
-    linecount = 0
-    missing = []
-    missinglinecount=0
-    while line:
-        linewords = line.split(",")
-        for i in range(len(linewords)):
-            if ((linewords[i] == "" or linewords[i] == "?") and i == headingnumber) :
-                missing.append((heading[i],linecount))
-                missinglinecount=missinglinecount+1
-            line = file.readline()
-            linecount = linecount + 1
-    return missing,missinglinecount
+def getMissingListbyHeadingNumber(filename,headingnumber):
+   heading=fetchHeading(filename)
+   return getMissingListbyHeadingName(filename,heading[headingnumber])
 
-def isMissingListbyHeadingName(filename,headingname):
+def getMissingListbyHeadingName(filename,headingname):
     file = open(filename)
     line = file.readline()
     heading = []
@@ -117,34 +115,35 @@ def isMissingListbyHeadingName(filename,headingname):
     while line:
         linewords = line.split(",")
         for i in range(len(linewords)):
-            if ((linewords[i] == "" or linewords[i] == "?") and heading[i] == headingname) :
+            if ((linewords[i] == "" or linewords[i] == "?") and heading[i]== headingname) :
                 missing.append((heading[i],linecount))
                 missinglinecount=missinglinecount+1
-            line = file.readline()
-            linecount = linecount + 1
+        line = file.readline()
+        linecount = linecount + 1
+    file.close()
     return missing,missinglinecount
 
 
+
 # print "Checking iq/sj dataset"
-filename="../dataset/dengue_train_iq.csv"
-# filename="../dataset/dengue_train_sj.csv"
-# missing,missingcount = check(filename)
+# filename="../dataset/dengue_train_iq.csv"
+# # filename="../dataset/dengue_train_sj.csv"
+# missing,missingcount = getMissing(filename)
 # print missing
 # print missingcount
 # print "Checking isMissing"
 # print isMissing(filename,45,11)
 # print "Checking isMissingByHeading"
 # print isMissingByHeading(filename,21,'station_precip_mm')
-# print "Checking isMissingByLine"
-# missing,attributecount = isMissingListbyLine(filename,45)
+# print "Checking getMissingByLine"
+# missing,attributecount = getMissingListbyLine(filename,234)
 # print missing
 # print attributecount
-
-print "Checking isMissingListbyHeadingNumber"
-missing,missingcount = isMissingListbyHeadingNumber(filename,22)
-print missing
-print missingcount
-print "Checking isMissingListbyHeadingName"
-missing,missingcount = isMissingListbyHeadingName(filename,'station_precip_mm')
-print missing
-print missingcount
+# print "Checking getMissingListbyHeadingNumber"
+# missing,missingcount = getMissingListbyHeadingNumber(filename,19)
+# print missing
+# print missingcount
+# print "Checking getMissingListbyHeadingName"
+# missing,missingcount = getMissingListbyHeadingName(filename,'station_precip_mm')
+# print missing
+# print missingcount
